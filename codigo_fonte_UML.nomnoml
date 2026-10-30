@@ -1,0 +1,61 @@
+#direction: down
+#spacing: 60
+#padding: 12
+#ranker: longest-path
+
+[<abstract> Pessoa |
+  + nome: string
+  - _cpf: string
+  + idade: int |
+  + get_cpf(): string
+]
+
+[Medico |
+  - _crm: string
+  + espec: string |
+  + atender()
+]
+
+[<abstract> Paciente |
+  - _sintomas: string |
+  + gerar_conta(): float
+]
+
+[PacienteParticular |
+  - _valor_consulta: float
+  - _eh_retorno: bool |
+  + gerar_conta(): float
+]
+
+[PacienteConvenio |
+  - _nomePlano: string
+  - _numeroCarteirinha: string |
+  + gerar_conta(): float
+]
+
+[Triagem |
+  - _temperatura: float
+  - _pressaoSistolica: int
+  - _nivel_dor: int
+  - _cor_risco: string
+  - _peso_prioridade: int |
+  + calcular_risco()
+  + exibir_triagem()
+]
+
+[Consulta |
+  - _data_hora: datetime
+  - _diagnostico: string
+  - _receita: string |
+  + exibir_resumo()
+]
+
+
+[Pessoa] <:- [Medico]
+[Pessoa] <:- [Paciente]
+[Paciente] <:- [PacienteParticular]
+[Paciente] <:- [PacienteConvenio]
+
+[Medico] <- [Consulta]
+[Paciente] <- [Consulta]
+[Consulta] -> [Triagem]
