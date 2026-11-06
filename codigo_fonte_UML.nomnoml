@@ -1,61 +1,90 @@
 #direction: down
-#spacing: 60
-#padding: 12
-#ranker: longest-path
+#spacing: 75
+#padding: 16
 
 [<abstract> Pessoa |
-  + nome: string
-  - _cpf: string
-  + idade: int |
-  + get_cpf(): string
-]
-
-[Medico |
-  - _crm: string
-  + espec: string |
-  + atender()
+  +nome: string;
+  +idade: int;
+  -_cpf: string
+|
+  +get_cpf(): string
 ]
 
 [<abstract> Paciente |
-  - _sintomas: string |
-  + gerar_conta(): float
+  -_sintomas: string
+|
+  +gerar_conta(): float;
+  +get_prioridade_faixa_etaria(): tuple
+]
+
+[Medico |
+  +espec: string;
+  -_crm: string
+|
+  +atender(): string
 ]
 
 [PacienteParticular |
-  - _valor_consulta: float
-  - _eh_retorno: bool |
-  + gerar_conta(): float
+  -_valor_consulta: float;
+  -_eh_retorno: bool
+|
+  +gerar_conta(): float
 ]
 
 [PacienteConvenio |
-  - _nomePlano: string
-  - _numeroCarteirinha: string |
-  + gerar_conta(): float
+  -_nomePlano: string;
+  -_numeroCarteirinha: string
+|
+  +gerar_conta(): float
 ]
 
 [Triagem |
-  - _temperatura: float
-  - _pressaoSistolica: int
-  - _nivel_dor: int
-  - _cor_risco: string
-  - _peso_prioridade: int |
-  + calcular_risco()
-  + exibir_triagem()
+  -_temperatura: float;
+  -_pressaoSistolica: int;
+  -_nivel_dor: int;
+  -_cor_risco: string;
+  -_peso_prioridade: int
+|
+  +calcular_risco();
+  +exibir_triagem(): string
 ]
 
 [Consulta |
-  - _data_hora: datetime
-  - _diagnostico: string
-  - _receita: string |
-  + exibir_resumo()
+  -_data_hora: datetime;
+  -_diagnostico: string;
+  -_receita: string
+|
+  +obter_resumo_texto(): string
 ]
 
+[ItemFila |
+  -_contador_chegada: int (static);
+  +ordem_chegada: int;
+  +desc_idade: string;
+  +chave_prioridade: tuple
+]
 
+[FilaConsultas |
+|
+  +enfileirar(paciente, triagem): ItemFila;
+  -_ordenar();
+  +desenfileirar(): ItemFila;
+  +esta_vazia(): bool;
+  +obter_lista(): list
+]
+
+// 1. Bloco da Esquerda (Força o Médico a ficar livre na ponta esquerda)
 [Pessoa] <:- [Medico]
-[Pessoa] <:- [Paciente]
-[Paciente] <:- [PacienteParticular]
-[Paciente] <:- [PacienteConvenio]
-
 [Medico] <- [Consulta]
-[Paciente] <- [Consulta]
-[Consulta] -> [Triagem]
+
+// 2. Bloco do Centro (Constrói a árvore do Paciente no meio)
+[Pessoa] <:- [<abstract> Paciente]
+[<abstract> Paciente] <:- [PacienteParticular]
+[<abstract> Paciente] <:- [PacienteConvenio]
+[<abstract> Paciente] <- [Consulta]
+
+// 3. Bloco da Direita (Mantém a Fila e a Triagem organizadas no canto direito)
+[Triagem] <- [Consulta]
+[<abstract> Paciente] <- [ItemFila]
+[Triagem] <- [ItemFila]
+[ItemFila] <-o [FilaConsultas]
