@@ -1,6 +1,7 @@
 #direction: down
 #spacing: 75
 #padding: 16
+#edges: rounded
 
 [<abstract> Pessoa |
   +nome: string;
@@ -11,22 +12,23 @@
 ]
 
 [<abstract> Paciente |
-  -_sintomas: string
+  -_sintomas: string;
+  -_eh_retorno: bool
 |
-  +gerar_conta(): float;
-  +get_prioridade_faixa_etaria(): tuple
+  +is_retorno(): bool;
+  +get_prioridade_faixa_etaria(): tuple;
+  +gerar_conta(): float
 ]
 
 [Medico |
-  +espec: string;
-  -_crm: string
+  -_crm: string;
+  +espec: string
 |
   +atender(): string
 ]
 
 [PacienteParticular |
-  -_valor_consulta: float;
-  -_eh_retorno: bool
+  -_valor_consulta: float
 |
   +gerar_conta(): float
 ]
@@ -36,6 +38,22 @@
   -_numeroCarteirinha: string
 |
   +gerar_conta(): float
+]
+
+[Prontuario |
+  -_historico_consultas: List<Consulta>
+|
+  +adicionar_consulta(consulta: Consulta);
+  +obter_historico(): List<Consulta>;
+  +exibir_prontuario_texto(): string
+]
+
+[Consulta |
+  -_data_hora: datetime;
+  -_diagnostico: string;
+  -_receita: string
+|
+  +obter_resumo_texto(): string
 ]
 
 [Triagem |
@@ -49,42 +67,48 @@
   +exibir_triagem(): string
 ]
 
-[Consulta |
-  -_data_hora: datetime;
-  -_diagnostico: string;
-  -_receita: string
-|
-  +obter_resumo_texto(): string
-]
-
 [ItemFila |
   -_contador_chegada: int (static);
   +ordem_chegada: int;
+  +data_hora_chegada: datetime;
   +desc_idade: string;
   +chave_prioridade: tuple
+|
+  +calcular_tempo_estimado(posicao_fila: int): tuple
 ]
 
 [FilaConsultas |
+  -_fila: List<ItemFila>
 |
-  +enfileirar(paciente, triagem): ItemFila;
+  +enfileirar(paciente: Paciente, triagem: Triagem): ItemFila;
   -_ordenar();
   +desenfileirar(): ItemFila;
+  +proximo(): ItemFila;
   +esta_vazia(): bool;
+  +tamanho(): int;
   +obter_lista(): list
 ]
 
-// 1. Bloco da Esquerda (Força o Médico a ficar livre na ponta esquerda)
-[Pessoa] <:- [Medico]
-[Medico] <- [Consulta]
+// ------------------------------------------------
+// RELACIONAMENTOS E ESTRUTURAÇÃO VISUAL
+// ------------------------------------------------
 
-// 2. Bloco do Centro (Constrói a árvore do Paciente no meio)
+// 1. Árvore de Herança (Agrupa as pessoas à esquerda/centro)
+[Pessoa] <:- [Medico]
 [Pessoa] <:- [<abstract> Paciente]
 [<abstract> Paciente] <:- [PacienteParticular]
 [<abstract> Paciente] <:- [PacienteConvenio]
-[<abstract> Paciente] <- [Consulta]
 
-// 3. Bloco da Direita (Mantém a Fila e a Triagem organizadas no canto direito)
-[Triagem] <- [Consulta]
-[<abstract> Paciente] <- [ItemFila]
-[Triagem] <- [ItemFila]
-[ItemFila] <-o [FilaConsultas]
+// 2. Fila e Triagem (Agrupa as regras de chegada à direita)
+[FilaConsultas] o-> [ItemFila]
+[ItemFila] -> [Triagem]
+[ItemFila] -> [<abstract> Paciente]
+
+// 3. Prontuário e Consulta (O fluxo de atendimento no centro/baixo)
+[<abstract> Paciente] +-> [Prontuario]
+[Prontuario] o-> [Consulta]
+
+// 4. Dependências da Consulta (Deixando claro de onde ela puxa dados)
+[Consulta] -> [<abstract> Paciente]
+[Consulta] -> [Medico]
+[Consulta] -> [Triagem]

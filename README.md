@@ -2,7 +2,7 @@
 
 Trabalho prático desenvolvido para a disciplina de **Programação Orientada a Objetos (POO)** dos cursos de **Ciência da Computação** e **Sistemas de Informação** da **Universidade Católica de Santos (UniSantos)**.
 
-## 📌 Sobre o Projeto
+##  Sobre o Projeto
 
 O objetivo deste projeto é modelar e implementar um fluxo simplificado de atendimento hospitalar com fila de prioridades, baseado no Protocolo de Manchester (gravidade clínica) combinado com a legislação de prioridade etária (Estatuto do Idoso).
 
@@ -12,7 +12,7 @@ O sistema conta com:
 * Chamada de pacientes para consulta médica com geração de resumo clínico e financeiro.
 * Interface gráfica intuitiva construída com a biblioteca padrão `tkinter`.
 
-## 🏛️ Aplicação dos Pilares de POO
+##  Aplicação dos Pilares de POO
 
 O sistema foi concebido a partir de um diagrama de classes UML estrito, cobrindo os conceitos centrais de POO:
 
@@ -33,7 +33,7 @@ O sistema foi concebido a partir de um diagrama de classes UML estrito, cobrindo
    * `Consulta` associa instâncias de `Medico`, `Paciente` e `Triagem`.
    * `FilaConsultas` agrega múltiplos objetos do tipo `ItemFila`.
 
-## ⚖️ Critérios de Prioridade da Fila
+##  Critérios de Prioridade da Fila
 
 A ordenação da fila não é estritamente por ordem de chegada (FIFO), mas sim por uma tupla de ordenação `(peso_risco, peso_idade, ordem_chegada)`:
 
@@ -51,7 +51,7 @@ A ordenação da fila não é estritamente por ordem de chegada (FIFO), mas sim 
 3. **Ordem de Chegada (Desempate 2):**
    * Mantém a justiça cronológica em caso de mesmo risco e mesma prioridade de idade.
 
-## 📁 Estrutura de Arquivos
+##  Estrutura de Arquivos
 
 ```
 ├── classes.py      # Modelagem das classes, regras de negócio e fila
