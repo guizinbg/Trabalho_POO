@@ -60,7 +60,7 @@ A ordenação da fila não é estritamente por ordem de chegada (FIFO), mas sim 
 └── README.md       # Documentação do projeto
 ```
 
-## 🚀 Como Executar
+##W Como Executar
 
 ### Pré-requisitos
 * Python 3.10 ou superior instalado.
@@ -72,7 +72,7 @@ No terminal, na pasta raiz do projeto, execute:
 python main.py
 ```
 
-## 👥 Integrantes / Autores
+##  Integrantes / Autores
 
 * **Guilherme Borges da Veiga**
 * **Leonardo Silva dos Santos**
